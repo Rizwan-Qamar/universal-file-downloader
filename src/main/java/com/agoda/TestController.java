@@ -1,4 +1,4 @@
-package com.javainuse;
+package com.agoda;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
