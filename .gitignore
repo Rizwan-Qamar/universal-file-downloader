@@ -56,3 +56,4 @@ atlassian-ide-plugin.xml
 .gradletasknamecache
 
 plugins/*
+downloads/*
