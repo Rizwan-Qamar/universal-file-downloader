@@ -13,8 +13,8 @@ public class HttpFileHandler extends AbstractFileHandler {
     String filePath = FilenameUtils.concat("downloads", FilenameUtils.getName(dataUrl.getPath()));
     File file = new File(filePath);
 
-    try (InputStream inputStream = dataUrl.openStream();
-        OutputStream outputStream = new FileOutputStream(file, false)) {
+    try (InputStream inputStream = new BufferedInputStream(dataUrl.openStream());
+        OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file, false))) {
 
       saveFile(inputStream, outputStream);
 

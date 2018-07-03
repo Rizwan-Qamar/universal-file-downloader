@@ -11,6 +11,8 @@ repositories {
 }
 
 dependencies {
+    compile project(':api')
+
     compile ('org.springframework.boot:spring-boot:' + springBootVersion)
     compile ("org.springframework.boot:spring-boot-configuration-processor:" + springBootVersion)
 
