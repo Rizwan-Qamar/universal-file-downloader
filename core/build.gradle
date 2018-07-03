@@ -1,0 +1,18 @@
+plugins {
+    id 'java'
+}
+
+version 'unspecified'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile ('org.springframework.boot:spring-boot:' + springBootVersion)
+    compile ("org.springframework.boot:spring-boot-configuration-processor:" + springBootVersion)
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}

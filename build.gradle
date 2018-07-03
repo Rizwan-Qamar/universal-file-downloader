@@ -4,6 +4,7 @@ buildscript {
 	}
 	repositories {
 		mavenCentral()
+		maven { url 'http://repo.spring.io/plugins-release' }
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
@@ -29,11 +30,13 @@ repositories {
 	mavenCentral()
 }
 
-
 dependencies {
+    compile project(':core')
+
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile('org.apache.tomcat.embed:tomcat-embed-jasper')
 	compile('javax.servlet:jstl')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 compileJava.dependsOn tasks.googleJavaFormat
+
