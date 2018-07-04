@@ -1,6 +1,7 @@
 package com.agoda.protocols;
 
 import com.agoda.interfaces.FileHandler;
+import com.agoda.model.ResourceModel;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,7 +12,7 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractFileHandler implements FileHandler {
   private Logger log = LoggerFactory.getLogger(this.getClass());
 
-  private String resourceLocation;
+  private ResourceModel resourceLocation;
 
   @Override
   public void saveFile(InputStream inputStream, OutputStream outputStream) throws IOException {
@@ -34,11 +35,11 @@ public abstract class AbstractFileHandler implements FileHandler {
   /** Returns the path of saved file */
   public abstract String call() throws IOException;
 
-  public String getResourceLocation() {
+  public ResourceModel getResourceLocation() {
     return resourceLocation;
   }
 
-  public void setResourceLocation(String resourceLocation) {
+  public void setResourceLocation(ResourceModel resourceLocation) {
     this.resourceLocation = resourceLocation;
   }
 }

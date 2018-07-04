@@ -1,6 +1,7 @@
 package com.agoda.core.api;
 
 import com.agoda.DownloadManager;
+import com.agoda.model.ResourceModel;
 import com.agoda.protocols.AbstractFileHandler;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -67,7 +68,7 @@ public class BatchTask implements com.agoda.core.interfaces.BatchTask {
     for (String resource : resourcePaths) {
       log.debug("Making Task: " + resource);
       AbstractFileHandler abstractFileHandler = DownloadManager.getInstance(resource);
-      abstractFileHandler.setResourceLocation(resource);
+      abstractFileHandler.setResourceLocation(new ResourceModel(resource));
 
       tasks.add(abstractFileHandler);
     }

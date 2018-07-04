@@ -12,7 +12,7 @@ public class HttpFileHandler extends AbstractFileHandler {
   @Override
   public String call() throws IOException {
 
-    URL dataUrl = new URL(getResourceLocation());
+    URL dataUrl = new URL(getResourceLocation().getUrl());
     String filePath = FilenameUtils.concat("downloads", FilenameUtils.getName(dataUrl.getPath()));
     File file = new File(filePath);
 
