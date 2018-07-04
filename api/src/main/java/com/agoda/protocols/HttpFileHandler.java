@@ -3,8 +3,11 @@ package com.agoda.protocols;
 import java.io.*;
 import java.net.URL;
 import org.apache.commons.io.FilenameUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HttpFileHandler extends AbstractFileHandler {
+  private Logger log = LoggerFactory.getLogger(this.getClass());
 
   @Override
   public String call() throws IOException {
@@ -19,6 +22,7 @@ public class HttpFileHandler extends AbstractFileHandler {
       saveFile(inputStream, outputStream);
 
     } catch (IOException ex) {
+      log.error(String.format("There was an exception for: %s", ex.getMessage()));
       deleteFile(file);
     }
 

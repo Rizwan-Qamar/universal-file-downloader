@@ -27,10 +27,9 @@ public class TestController {
 
   private List<String> fileList() {
     List<String> data = new ArrayList<>();
-    data.add(
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/K2_2006b.jpg/800px-K2_2006b.jpg");
-    data.add(
-        "https://www.worldatlas.com/r/w728-h425-c728x425/upload/f1/ec/77/prime-minister-s-secretariat-islamabad-by-usman-ghani.jpg");
+    data.add("https://archive.org/download/80MegapixelsCameraSampleImage/CF000891.jpg");
+    data.add("https://archive.org/download/80MegapixelsCameraSampleImage/CF000221.jpg");
+    data.add("https://c2.staticflickr.com/8/7151/6760135001_14c59a1490_o.jpg");
     return data;
   }
 }

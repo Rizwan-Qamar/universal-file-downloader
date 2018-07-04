@@ -16,12 +16,12 @@ public abstract class AbstractFileHandler implements FileHandler {
   @Override
   public void saveFile(InputStream inputStream, OutputStream outputStream) throws IOException {
 
-      byte[] buff = new byte[8*1024]; //8KB
+    byte[] buff = new byte[8 * 1024 * 1024]; //8KB
 
-      int n = 0;
-      while ((n = inputStream.read(buff)) >= 0) {
-          outputStream.write(buff, 0, n);
-      }
+    int n = 0;
+    while ((n = inputStream.read(buff)) >= 0) {
+      outputStream.write(buff, 0, n);
+    }
   }
 
   @Override
