@@ -50,7 +50,7 @@ public class BatchTask implements com.agoda.core.interfaces.BatchTask {
   }
 
   @Async
-  public void processTask(List<String> resourcePaths) {
+  public void processTask(List<String> resourcePaths) throws MalformedURLException {
 
     List<AbstractFileHandler> tasks = new ArrayList<>();
     try {
@@ -59,6 +59,7 @@ public class BatchTask implements com.agoda.core.interfaces.BatchTask {
     } catch (MalformedURLException ex) {
       ex.printStackTrace();
       log.error(String.format("There was an exception for: %s", ex.getMessage()));
+      throw ex;
     }
   }
 

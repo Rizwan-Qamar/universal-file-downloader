@@ -18,7 +18,7 @@ public class AbstractFileHandlerTest {
     OutputStream outputStream = new FileOutputStream(outputFile, false);
 
     AbstractFileHandler abstractFileHandler = Mockito.spy(AbstractFileHandler.class);
-    ;
+
     abstractFileHandler.saveFile(inputStream, outputStream);
 
     Assert.assertTrue(outputFile.exists());

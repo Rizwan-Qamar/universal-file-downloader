@@ -1,6 +1,7 @@
 package com.agoda.core.api;
 
 import com.agoda.core.interfaces.BatchTask;
+import java.net.MalformedURLException;
 import java.util.List;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.slf4j.Logger;
@@ -31,7 +32,11 @@ public class FileHandlerManagement implements com.agoda.core.interfaces.FileHand
     log.trace("Start processing batch request");
     //TODO Run the batch in Async
 
-    batchTask.processTask(files);
+    try {
+      batchTask.processTask(files);
+    } catch (MalformedURLException e) {
+      e.printStackTrace();
+    }
 
     log.trace("Batch request was initiated");
     //TODO After all the batch has finished
