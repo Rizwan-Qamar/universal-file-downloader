@@ -37,7 +37,8 @@ public class FtpFileHandler extends AbstractFileHandler {
         saveFile(inputStream, outputStream);
         boolean success = ftpClient.completePendingCommand();
         if (success) {
-          log.debug("FTP PROTOCOL: File " + dataUrl.getPath() + " has been downloaded successfully.");
+          log.debug(
+              "FTP PROTOCOL: File " + dataUrl.getPath() + " has been downloaded successfully.");
         }
       } catch (Exception ex) {
         log.error(String.format("There was an exception for: %s", ex.getMessage()));

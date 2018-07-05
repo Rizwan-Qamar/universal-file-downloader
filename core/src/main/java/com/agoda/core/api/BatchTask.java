@@ -68,7 +68,8 @@ public class BatchTask implements com.agoda.core.interfaces.BatchTask {
     for (String resource : resourcePaths) {
       log.debug("Making Task: " + resource);
       AbstractFileHandler abstractFileHandler = DownloadManager.getInstance(resource);
-      abstractFileHandler.setResourceLocation(new ResourceModel(resource, "anonymous", "anonymous"));
+      abstractFileHandler.setResourceLocation(
+          new ResourceModel(resource, "anonymous", "anonymous"));
 
       tasks.add(abstractFileHandler);
     }
