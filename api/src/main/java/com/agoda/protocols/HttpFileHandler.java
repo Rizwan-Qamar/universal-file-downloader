@@ -20,7 +20,7 @@ public class HttpFileHandler extends AbstractFileHandler {
         OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file, false))) {
 
       saveFile(inputStream, outputStream);
-
+      log.debug("HTTP PROTOCOL: File " + dataUrl.getPath() + " has been downloaded successfully.");
     } catch (IOException ex) {
       log.error(String.format("There was an exception for: %s", ex.getMessage()));
       deleteFile(file);

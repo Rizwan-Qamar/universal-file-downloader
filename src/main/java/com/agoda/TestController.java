@@ -27,11 +27,11 @@ public class TestController {
 
   private List<String> fileList() {
     List<String> data = new ArrayList<>();
-    //    data.add("https://archive.org/download/80MegapixelsCameraSampleImage/CF000891.jpg");
-    //    data.add("https://archive.org/download/80MegapixelsCameraSampleImage/CF000221.jpg");
-    //    data.add("https://c2.staticflickr.com/8/7151/6760135001_14c59a1490_o.jpg");
-    data.add("ftp.dlptest.com/.ftpquota");
-
+        data.add("https://archive.org/download/80MegapixelsCameraSampleImage/CF000891.jpg");
+        data.add("https://archive.org/download/80MegapixelsCameraSampleImage/CF000221.jpg");
+        data.add("https://c2.staticflickr.com/8/7151/6760135001_14c59a1490_o.jpg");
+        data.add("ftp://speedtest.tele2.net/50MB.zip");
+        data.add("ftp://speedtest.tele2.net/1GB.zip");
 
     return data;
   }

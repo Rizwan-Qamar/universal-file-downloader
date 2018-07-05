@@ -26,7 +26,7 @@ public class FtpFileHandler extends AbstractFileHandler {
     FTPClient ftpClient = new FTPClient();
     try {
       ftpClient.connect(dataUrl.getHost());
-            ftpClient.login("dlpuser@dlptest.com", "3D6XZV9MKdhM5fF");
+      ftpClient.login(getResourceLocation().getUsername(), getResourceLocation().getPassword());
       ftpClient.enterLocalPassiveMode();
       ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
 
@@ -35,10 +35,10 @@ public class FtpFileHandler extends AbstractFileHandler {
           OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file, false))) {
 
         saveFile(inputStream, outputStream);
-          boolean success = ftpClient.completePendingCommand();
-          if (success) {
-              log.info("File " + dataUrl.getPath() + " has been downloaded successfully.");
-          }
+        boolean success = ftpClient.completePendingCommand();
+        if (success) {
+          log.debug("FTP PROTOCOL: File " + dataUrl.getPath() + " has been downloaded successfully.");
+        }
       } catch (Exception ex) {
         log.error(String.format("There was an exception for: %s", ex.getMessage()));
         deleteFile(file);

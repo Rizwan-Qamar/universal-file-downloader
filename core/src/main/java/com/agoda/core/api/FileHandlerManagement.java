@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 public class FileHandlerManagement implements com.agoda.core.interfaces.FileHandlerManagement {
   private Logger log = LoggerFactory.getLogger(this.getClass());
 
-  public static String[] schemes = {"http", "https", "ftp", "sftp"};
+  public static String[] schemes = {"http", "https", "ftp"};
 
   @Autowired private BatchTask batchTask;
 
