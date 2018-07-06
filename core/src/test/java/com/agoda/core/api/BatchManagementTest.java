@@ -12,9 +12,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = FileHandlerManagement.class)
-public class FileHandlerManagementTest {
-  @InjectMocks private FileHandlerManagement fileHandlerManagement;
+@SpringBootTest(classes = BatchManagement.class)
+public class BatchManagementTest {
+  @InjectMocks private BatchManagement batchManagement;
 
   @Before
   public void init() throws Exception {
@@ -26,7 +26,7 @@ public class FileHandlerManagementTest {
     List<String> urls = new ArrayList<>();
     urls.add("http://archive.org/download/80MegapixelsCameraSampleImage/CF000891.jpg");
     urls.add("htt://archive.org/download/80MegapixelsCameraSampleImage/CF000891.jpg");
-    Assert.assertFalse(fileHandlerManagement.validateUrl(urls));
+    Assert.assertFalse(batchManagement.validateUrl(urls));
   }
 
   @Test
@@ -34,6 +34,6 @@ public class FileHandlerManagementTest {
     List<String> urls = new ArrayList<>();
     urls.add("http://archive.org/download/80MegapixelsCameraSampleImage/CF000891.jpg");
     urls.add("https://archive.org/download/80MegapixelsCameraSampleImage/CF000891.jpg");
-    Assert.assertTrue(fileHandlerManagement.validateUrl(urls));
+    Assert.assertTrue(batchManagement.validateUrl(urls));
   }
 }

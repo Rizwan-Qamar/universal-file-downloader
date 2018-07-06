@@ -1,6 +1,7 @@
 package com.agoda.core.api;
 
 import com.agoda.DownloadManager;
+import com.agoda.entities.Batch;
 import com.agoda.model.ResourceModel;
 import com.agoda.protocols.AbstractFileHandler;
 import java.net.MalformedURLException;
@@ -61,11 +62,12 @@ public class BatchTask implements com.agoda.core.interfaces.BatchTask {
   }
 
   @Async
-  public void processTask(List<String> resourcePaths) throws MalformedURLException {
+  public void processTask(Batch batch) throws MalformedURLException {
 
+    log.info("Batch received: " + batch);
     List<AbstractFileHandler> tasks;
     try {
-      tasks = getTask(resourcePaths);
+      tasks = getTask(batch.getUrls());
       submitTasks(tasks);
     } catch (MalformedURLException ex) {
       ex.printStackTrace();

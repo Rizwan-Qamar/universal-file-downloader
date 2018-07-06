@@ -1,8 +1,8 @@
 package com.agoda.core.interfaces;
 
+import com.agoda.entities.Batch;
 import java.net.MalformedURLException;
-import java.util.List;
 
 public interface BatchTask {
-  void processTask(List<String> resourcePaths) throws MalformedURLException;
+  void processTask(Batch resourcePaths) throws MalformedURLException;
 }

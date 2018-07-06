@@ -1,6 +1,6 @@
 package com.agoda;
 
-import com.agoda.core.interfaces.FileHandlerManagement;
+import com.agoda.core.interfaces.BatchManagement;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,13 +16,13 @@ public class TestController {
 
   private Logger log = LoggerFactory.getLogger(this.getClass());
 
-  @Autowired private FileHandlerManagement fileHandlerManagement;
+  @Autowired private BatchManagement batchManagement;
 
   @RequestMapping("/")
   public ModelAndView firstPage() throws MalformedURLException {
 
     log.info("Received: " + "a request");
-    fileHandlerManagement.downloadFiles(fileList());
+    batchManagement.downloadFiles(fileList());
     return new ModelAndView("welcome");
   }
 
