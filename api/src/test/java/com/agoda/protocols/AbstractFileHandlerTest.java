@@ -14,7 +14,7 @@ public class AbstractFileHandlerTest {
   public void whenSaveFile_thenFileIsCreate() throws Exception {
 
     InputStream inputStream = new File("test_input" + "/input.txt").toURI().toURL().openStream();
-    File outputFile = new File("test_input" + "/input_out.txt");
+    File outputFile = new File("test-output" + "/input_out.txt");
     OutputStream outputStream = new FileOutputStream(outputFile, false);
 
     AbstractFileHandler abstractFileHandler = Mockito.spy(AbstractFileHandler.class);

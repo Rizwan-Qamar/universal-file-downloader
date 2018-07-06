@@ -19,7 +19,6 @@ public class AsyncExecutorConfig extends AsyncConfigurerSupport {
     ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
     executor.setCorePoolSize(20);
     executor.setMaxPoolSize(25);
-    executor.setQueueCapacity(50);
     executor.setThreadNamePrefix("UFDAsyncTask-");
     executor.initialize();
     return executor;

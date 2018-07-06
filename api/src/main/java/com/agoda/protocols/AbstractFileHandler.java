@@ -14,6 +14,8 @@ public abstract class AbstractFileHandler implements FileHandler {
 
   private ResourceModel resourceLocation;
 
+  public abstract void init(Object object);
+
   @Override
   public void saveFile(InputStream inputStream, OutputStream outputStream) throws IOException {
 

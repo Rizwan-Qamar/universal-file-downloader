@@ -9,6 +9,8 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -16,12 +18,21 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Scope("prototype")
+@ConfigurationProperties
 public class BatchTask implements com.agoda.core.interfaces.BatchTask {
   private Logger log = LoggerFactory.getLogger(this.getClass());
 
+  @Value("${ufd.core.api.downloadLocation:downloads}")
+  private String downloadDir;
+
+  @Value("${ufd.core.api.generic.username}")
+  private String genericUsername;
+
+  @Value("${ufd.core.api.generic.password}")
+  private String genericPassword;
+
   private ThreadPoolTaskExecutor asyncExecutor;
 
-  // TODO Start all tasks
   // TODO Wait for all tasks to finish
   // TODO Update database
 
@@ -38,7 +49,7 @@ public class BatchTask implements com.agoda.core.interfaces.BatchTask {
     this.asyncExecutor.setCorePoolSize(corePoolSize);
     this.asyncExecutor.initialize();
 
-    log.debug("AsyncExecutor is: " + asyncExecutor);
+    log.debug("AsyncExecutor is: " + asyncExecutor.getThreadNamePrefix());
 
     log.trace("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     log.trace("ThreadPollTaskExecutor configuration:");
@@ -52,7 +63,7 @@ public class BatchTask implements com.agoda.core.interfaces.BatchTask {
   @Async
   public void processTask(List<String> resourcePaths) throws MalformedURLException {
 
-    List<AbstractFileHandler> tasks = new ArrayList<>();
+    List<AbstractFileHandler> tasks;
     try {
       tasks = getTask(resourcePaths);
       submitTasks(tasks);
@@ -69,8 +80,9 @@ public class BatchTask implements com.agoda.core.interfaces.BatchTask {
     for (String resource : resourcePaths) {
       log.debug("Making Task: " + resource);
       AbstractFileHandler abstractFileHandler = DownloadManager.getInstance(resource);
+      abstractFileHandler.init(downloadDir);
       abstractFileHandler.setResourceLocation(
-          new ResourceModel(resource, "anonymous", "anonymous"));
+          new ResourceModel(resource, genericUsername, genericPassword));
 
       tasks.add(abstractFileHandler);
     }

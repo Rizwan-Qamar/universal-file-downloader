@@ -7,11 +7,13 @@ import org.apache.commons.validator.routines.UrlValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 @Service
 @Scope("prototype")
+@ConfigurationProperties
 public class FileHandlerManagement implements com.agoda.core.interfaces.FileHandlerManagement {
   private Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -20,10 +22,11 @@ public class FileHandlerManagement implements com.agoda.core.interfaces.FileHand
   @Autowired private BatchTask batchTask;
 
   @Override
-  public void downloadFiles(List<String> files) {
+  public void downloadFiles(List<String> files) throws MalformedURLException {
 
     if (!validateUrl(files)) {
       //TODO Throw exception as one or more URLs were not valid
+      throw new MalformedURLException("One or more URLs were not valid ");
     }
 
     log.info("Save batch info into the datebase");
@@ -42,7 +45,7 @@ public class FileHandlerManagement implements com.agoda.core.interfaces.FileHand
     //TODO After all the batch has finished
   }
 
-  private boolean validateUrl(List<String> resourcePaths) {
+  protected boolean validateUrl(List<String> resourcePaths) {
     UrlValidator urlValidator = new UrlValidator(schemes);
     for (String resource : resourcePaths) {
       if (urlValidator.isValid(resource)) {

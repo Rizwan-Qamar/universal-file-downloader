@@ -9,11 +9,20 @@ import org.slf4j.LoggerFactory;
 public class HttpFileHandler extends AbstractFileHandler {
   private Logger log = LoggerFactory.getLogger(this.getClass());
 
+  private String downloadDir = "downloads";
+
+  @Override
+  public void init(Object object) {
+    if (object instanceof String) {
+      downloadDir = (String) object;
+    }
+  }
+
   @Override
   public String call() throws IOException {
 
     URL dataUrl = new URL(getResourceLocation().getUrl());
-    String filePath = FilenameUtils.concat("downloads", FilenameUtils.getName(dataUrl.getPath()));
+    String filePath = FilenameUtils.concat(downloadDir, FilenameUtils.getName(dataUrl.getPath()));
     File file = new File(filePath);
 
     try (InputStream inputStream = new BufferedInputStream(dataUrl.openStream());

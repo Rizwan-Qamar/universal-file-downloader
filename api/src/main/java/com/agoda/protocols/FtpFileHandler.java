@@ -11,22 +11,30 @@ import org.slf4j.LoggerFactory;
 public class FtpFileHandler extends AbstractFileHandler {
   private Logger log = LoggerFactory.getLogger(this.getClass());
 
+  private String downloadDir = "downloads";
+
+  @Override
+  public void init(Object object) {
+    if (object instanceof String) {
+      downloadDir = (String) object;
+    }
+  }
+
   @Override
   public String call() throws IOException {
 
     URL dataUrl = new URL(getResourceLocation().getUrl());
-    String filePath = FilenameUtils.concat("downloads", FilenameUtils.getName(dataUrl.getPath()));
+    String filePath = FilenameUtils.concat(downloadDir, FilenameUtils.getName(dataUrl.getPath()));
     File file = new File(filePath);
-
-    // String serverAddress = "www.ftpserveraddress.com"; // ftp server address
-    final int port = 21; // ftp uses default port Number 21
-    String username = "xyz"; // username of ftp server
-    String password = "xyz"; // password of ftp server
 
     FTPClient ftpClient = new FTPClient();
     try {
       ftpClient.connect(dataUrl.getHost());
-      ftpClient.login(getResourceLocation().getUsername(), getResourceLocation().getPassword());
+
+      if (!getResourceLocation().getUsername().isEmpty()
+          && !getResourceLocation().getPassword().isEmpty())
+        ftpClient.login(getResourceLocation().getUsername(), getResourceLocation().getPassword());
+
       ftpClient.enterLocalPassiveMode();
       ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
 

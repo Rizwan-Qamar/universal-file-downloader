@@ -1,5 +1,6 @@
 package com.agoda.core.interfaces;
 
+import java.net.MalformedURLException;
 import java.util.List;
 
 public interface FileHandlerManagement {
@@ -9,5 +10,5 @@ public interface FileHandlerManagement {
    *
    * @param files is a list of URLs
    */
-  void downloadFiles(List<String> files);
+  void downloadFiles(List<String> files) throws MalformedURLException;
 }
