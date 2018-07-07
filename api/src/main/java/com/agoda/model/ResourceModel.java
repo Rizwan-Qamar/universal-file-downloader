@@ -2,18 +2,29 @@ package com.agoda.model;
 
 public class ResourceModel {
 
+  private String identifier;
   private String url;
   private String username;
   private String password;
 
-  public ResourceModel(String url) {
+  public ResourceModel(String identifier, String url) {
+    this.identifier = identifier;
     this.url = url;
   }
 
-  public ResourceModel(String url, String username, String password) {
+  public ResourceModel(String identifier, String url, String username, String password) {
+    this.identifier = identifier;
     this.url = url;
     this.username = username;
     this.password = password;
+  }
+
+  public String getIdentifier() {
+    return identifier;
+  }
+
+  public void setIdentifier(String identifier) {
+    this.identifier = identifier;
   }
 
   public String getUrl() {

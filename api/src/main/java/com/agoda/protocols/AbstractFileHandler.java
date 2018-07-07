@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractFileHandler implements FileHandler {
   private Logger log = LoggerFactory.getLogger(this.getClass());
 
-  private ResourceModel resourceLocation;
+  private ResourceModel resourceModel;
 
   public abstract void init(Object object);
 
@@ -35,13 +35,13 @@ public abstract class AbstractFileHandler implements FileHandler {
   }
 
   /** Returns the path of saved file */
-  public abstract String call() throws IOException;
+  public abstract ResourceModel call() throws IOException;
 
-  public ResourceModel getResourceLocation() {
-    return resourceLocation;
+  public ResourceModel getResourceModel() {
+    return resourceModel;
   }
 
-  public void setResourceLocation(ResourceModel resourceLocation) {
-    this.resourceLocation = resourceLocation;
+  public void setResourceModel(ResourceModel resourceModel) {
+    this.resourceModel = resourceModel;
   }
 }

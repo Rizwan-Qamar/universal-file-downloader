@@ -2,14 +2,20 @@ package com.agoda.core.api;
 
 import com.agoda.DownloadManager;
 import com.agoda.entities.Batch;
+import com.agoda.entities.BatchItem;
 import com.agoda.model.ResourceModel;
 import com.agoda.protocols.AbstractFileHandler;
+import com.agoda.repositories.BatchRepository;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Scope;
@@ -22,6 +28,8 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties
 public class BatchTask implements com.agoda.core.interfaces.BatchTask {
   private Logger log = LoggerFactory.getLogger(this.getClass());
+
+  @Autowired private BatchRepository batchRepository;
 
   @Value("${ufd.core.api.downloadLocation:downloads}")
   private String downloadDir;
@@ -65,36 +73,75 @@ public class BatchTask implements com.agoda.core.interfaces.BatchTask {
   public void processTask(Batch batch) throws MalformedURLException {
 
     log.info("Batch received: " + batch);
+    List<Future<ResourceModel>> futures = new ArrayList<>();
     List<AbstractFileHandler> tasks;
     try {
-      tasks = getTask(batch.getUrls());
-      submitTasks(tasks);
+      tasks = getTask(batch.getBatchItems());
+      futures = submitTasks(tasks);
     } catch (MalformedURLException ex) {
       ex.printStackTrace();
       log.error(String.format("There was an exception for: %s", ex.getMessage()));
       throw ex;
     }
+
+    log.debug("Waiting for tasks");
+    for (Future<ResourceModel> future : futures) {
+
+      try {
+        ResourceModel resourceModel = future.get();
+        log.debug(
+            "Identifier: "
+                + resourceModel.getIdentifier()
+                + " File "
+                + resourceModel.getUrl()
+                + " has been downloaded successfully.");
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      } catch (ExecutionException e) {
+
+      }
+    }
+
+    cleanUp();
+
+    log.debug("Updating status of batch: " + batch.getId());
+
+    //TODO After all the batch has finished Update status of Batch to completed and update status of all Item to completed or Exception
   }
 
-  private List<AbstractFileHandler> getTask(List<String> resourcePaths)
+  private List<AbstractFileHandler> getTask(List<BatchItem> resourcePaths)
       throws MalformedURLException {
     List<AbstractFileHandler> tasks = new ArrayList<>();
-    for (String resource : resourcePaths) {
-      log.debug("Making Task: " + resource);
-      AbstractFileHandler abstractFileHandler = DownloadManager.getInstance(resource);
+    for (BatchItem batchItem : resourcePaths) {
+      log.debug("Making Task: " + batchItem);
+      AbstractFileHandler abstractFileHandler =
+          DownloadManager.getInstance(batchItem.getResourceLocation());
       abstractFileHandler.init(downloadDir);
-      abstractFileHandler.setResourceLocation(
-          new ResourceModel(resource, genericUsername, genericPassword));
+      abstractFileHandler.setResourceModel(
+          new ResourceModel(
+              batchItem.getId(),
+              batchItem.getResourceLocation(),
+              genericUsername,
+              genericPassword));
 
       tasks.add(abstractFileHandler);
     }
     return tasks;
   }
 
-  private void submitTasks(List<AbstractFileHandler> tasks) {
+  private List<Future<ResourceModel>> submitTasks(List<AbstractFileHandler> tasks) {
+    List<Future<ResourceModel>> futures = new ArrayList<>();
     for (AbstractFileHandler abstractFileHandler : tasks) {
       log.debug("Submitting Task: " + abstractFileHandler);
-      asyncExecutor.submit(abstractFileHandler);
+      futures.add(asyncExecutor.submit(abstractFileHandler));
+    }
+    return futures;
+  }
+
+  @PreDestroy
+  public void cleanUp() {
+    if (asyncExecutor != null) {
+      asyncExecutor.shutdown();
     }
   }
 }

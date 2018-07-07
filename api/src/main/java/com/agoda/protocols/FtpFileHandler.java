@@ -1,5 +1,6 @@
 package com.agoda.protocols;
 
+import com.agoda.model.ResourceModel;
 import java.io.*;
 import java.net.URL;
 import org.apache.commons.io.FilenameUtils;
@@ -21,9 +22,9 @@ public class FtpFileHandler extends AbstractFileHandler {
   }
 
   @Override
-  public String call() throws IOException {
+  public ResourceModel call() throws IOException {
 
-    URL dataUrl = new URL(getResourceLocation().getUrl());
+    URL dataUrl = new URL(getResourceModel().getUrl());
     String filePath = FilenameUtils.concat(downloadDir, FilenameUtils.getName(dataUrl.getPath()));
     File file = new File(filePath);
 
@@ -31,9 +32,9 @@ public class FtpFileHandler extends AbstractFileHandler {
     try {
       ftpClient.connect(dataUrl.getHost());
 
-      if (!getResourceLocation().getUsername().isEmpty()
-          && !getResourceLocation().getPassword().isEmpty())
-        ftpClient.login(getResourceLocation().getUsername(), getResourceLocation().getPassword());
+      if (!getResourceModel().getUsername().isEmpty()
+          && !getResourceModel().getPassword().isEmpty())
+        ftpClient.login(getResourceModel().getUsername(), getResourceModel().getPassword());
 
       ftpClient.enterLocalPassiveMode();
       ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
@@ -41,7 +42,7 @@ public class FtpFileHandler extends AbstractFileHandler {
       try (InputStream inputStream =
               ftpClient.retrieveFileStream(String.format("%s", dataUrl.getFile()));
           OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file, false))) {
-
+        log.debug("FTP PROTOCOL: File " + dataUrl.getPath() + " has started downloading.");
         saveFile(inputStream, outputStream);
         boolean success = ftpClient.completePendingCommand();
         if (success) {
@@ -62,6 +63,6 @@ public class FtpFileHandler extends AbstractFileHandler {
         log.error(String.format("There was an exception for: %s", ex.getMessage()));
       }
     }
-    return filePath;
+    return getResourceModel();
   }
 }

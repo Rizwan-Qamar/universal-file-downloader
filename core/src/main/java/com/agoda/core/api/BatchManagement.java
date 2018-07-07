@@ -2,6 +2,9 @@ package com.agoda.core.api;
 
 import com.agoda.core.interfaces.BatchTask;
 import com.agoda.entities.Batch;
+import com.agoda.entities.BatchItem;
+import com.agoda.entities.BatchItemStatus;
+import com.agoda.entities.BatchStatus;
 import com.agoda.repositories.BatchRepository;
 import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
@@ -30,12 +33,11 @@ public class BatchManagement implements com.agoda.core.interfaces.BatchManagemen
   public void downloadFiles(List<String> files) throws MalformedURLException {
 
     if (!validateUrl(files)) {
-      //TODO Throw exception as one or more URLs were not valid
       throw new MalformedURLException("One or more URLs were not valid ");
     }
 
     Batch batch = getBatch(files);
-    log.info("Saving batch info into the datebase");
+    log.info("Saving batch info into the database");
     log.trace("Saving batch with info: " + String.valueOf(batch));
     batch = batchRepository.save(batch);
 
@@ -46,8 +48,7 @@ public class BatchManagement implements com.agoda.core.interfaces.BatchManagemen
       e.printStackTrace();
     }
 
-    log.trace("Batch request was initiated");
-    //TODO After all the batch has finished
+    log.debug("Batch request was submitted");
   }
 
   @Override
@@ -60,7 +61,14 @@ public class BatchManagement implements com.agoda.core.interfaces.BatchManagemen
     Batch batch = new Batch();
     batch.setCreatedAt(format.format(new Date()));
     batch.setUpdatedAt(format.format(new Date()));
-    batch.getUrls().addAll(urls);
+    batch.setStatus(BatchStatus.CREATED);
+    for (String url : urls) {
+      BatchItem batchItem = new BatchItem();
+      batchItem.setResourceLocation(url);
+      batchItem.setStatus(BatchItemStatus.UNAVAILABLE);
+      batch.getBatchItems().add(batchItem);
+    }
+
     return batch;
   }
 

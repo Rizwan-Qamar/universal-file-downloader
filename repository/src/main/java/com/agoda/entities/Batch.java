@@ -14,8 +14,10 @@ public class Batch implements Serializable {
 
   private String updatedAt;
 
-  @ElementCollection(fetch = FetchType.EAGER)
-  private List<String> urls;
+  private BatchStatus status;
+
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  private List<BatchItem> batchItems;
 
   public Batch() {}
 
@@ -48,14 +50,22 @@ public class Batch implements Serializable {
     this.updatedAt = updatedAt;
   }
 
-  /** Resource URLs in this batch request. */
-  public List<String> getUrls() {
-    if (urls == null) urls = new ArrayList<String>();
-    return urls;
+  /** Batch items in this batch request. */
+  public List<BatchItem> getBatchItems() {
+    if (batchItems == null) batchItems = new ArrayList<BatchItem>();
+    return batchItems;
   }
 
-  public void setUrls(List<String> urls) {
-    this.urls = urls;
+  public void setBatchItems(List<BatchItem> batchItems) {
+    this.batchItems = batchItems;
+  }
+
+  public BatchStatus getStatus() {
+    return status;
+  }
+
+  public void setStatus(BatchStatus status) {
+    this.status = status;
   }
 
   @Override
@@ -70,6 +80,10 @@ public class Batch implements Serializable {
         + ", updatedAt='"
         + updatedAt
         + '\''
+        + ", status="
+        + status
+        + ", batchItems="
+        + batchItems
         + '}';
   }
 }

@@ -51,9 +51,9 @@ spring-*/src/main/java/META-INF/MANIFEST.MF
 .idea
 out
 src/main/dist/plugins
-test-output
 atlassian-ide-plugin.xml
 .gradletasknamecache
+
 
 plugins/*
 downloads/*

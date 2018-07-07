@@ -1,10 +1,10 @@
 package com.agoda.core.api;
 
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 import com.agoda.entities.Batch;
+import com.agoda.entities.BatchItem;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,21 +34,46 @@ public class BatchTaskTest {
   @Test(expected = MalformedURLException.class)
   public void processTaskMalformedURLException() throws MalformedURLException {
 
-    List<String> urls = new ArrayList<>();
-    urls.add("http://archive.org/download/80MegapixelsCameraSampleImage/CF000891.jpg");
-    urls.add("htt://archive.org/download/80MegapixelsCameraSampleImage/CF000891.jpg");
-    when(batch.getUrls()).thenReturn(urls);
+    List<BatchItem> batchItems = new ArrayList<>();
+    BatchItem batchItem = new BatchItem();
+    batchItem.setResourceLocation(
+        "http://archive.org/download/80MegapixelsCameraSampleImage/CF000891.jpg");
+    batchItems.add(batchItem);
+
+    batchItem = new BatchItem();
+    batchItem.setResourceLocation(
+        "htt://archive.org/download/80MegapixelsCameraSampleImage/CF000891.jpg");
+    batchItems.add(batchItem);
+
+    when(batch.getBatchItems()).thenReturn(batchItems);
     batchTask.processTask(batch);
   }
 
   @Test
   public void processTaskCompleteFlow() throws MalformedURLException {
-    List<String> urls = new ArrayList<>();
-    urls.add("http://archive.org/download/80MegapixelsCameraSampleImage/CF000891.jpg");
-    urls.add("https://archive.org/download/80MegapixelsCameraSampleImage/CF000891.jpg");
-    urls.add("http://archive.org/download/80MegapixelsCameraSampleImage/CF000891.jpg");
-    urls.add("ftp://archive.org/download/80MegapixelsCameraSampleImage/CF000891.jpg");
-    when(batch.getUrls()).thenReturn(urls);
+
+    List<BatchItem> batchItems = new ArrayList<>();
+    BatchItem batchItem = new BatchItem();
+    batchItem.setResourceLocation(
+        "http://archive.org/download/80MegapixelsCameraSampleImage/CF000891.jpg");
+    batchItems.add(batchItem);
+
+    batchItem = new BatchItem();
+    batchItem.setResourceLocation(
+        "https://archive.org/download/80MegapixelsCameraSampleImage/CF000891.jpg");
+    batchItems.add(batchItem);
+
+    batchItem = new BatchItem();
+    batchItem.setResourceLocation(
+        "http://archive.org/download/80MegapixelsCameraSampleImage/CF000891.jpg");
+    batchItems.add(batchItem);
+
+    batchItem = new BatchItem();
+    batchItem.setResourceLocation(
+        "ftp://archive.org/download/80MegapixelsCameraSampleImage/CF000891.jpg");
+    batchItems.add(batchItem);
+
+    when(batch.getBatchItems()).thenReturn(batchItems);
     batchTask.processTask(batch);
   }
 }
