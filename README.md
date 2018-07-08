@@ -14,7 +14,7 @@ In order to execute the **UniversalFileDownloader(UFD)** you need to have **JDK 
 ## Architecture Overview
 The `universalFileDownloader` has 3 artifacts:
 
-###`api` 
+### `api` 
 It is responsible for downloading the file and saving it to the disk. New protocols can also be added in this artifact.
 
 ### `core` 
