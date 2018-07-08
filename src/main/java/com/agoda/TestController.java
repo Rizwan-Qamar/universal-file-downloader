@@ -31,6 +31,8 @@ public class TestController {
 
   @RequestMapping("/")
   public ModelAndView welcome() {
+
+    log.info("Welcome Request received");
     return new ModelAndView("welcome");
   }
 

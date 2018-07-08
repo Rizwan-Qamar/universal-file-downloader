@@ -20,7 +20,7 @@ It is responsible for downloading the file and saving it to the disk. New protoc
 It is responsible for the business logic and threading
  
 ### `repository` 
-It is responsible for interacting with the database
+It is responsible for interacting with the database. This artifact use Hibernate to interact with DB.
 
 ## Configurable Properties
 `ufd.core.api.downloadLocation` can be used to specify the downloading location. It is a relative path and files will be downloaded within the project directory.
@@ -29,6 +29,9 @@ It is responsible for interacting with the database
 
 `ufd.core.api.generic.password` is used only for FTP protocol. In order to access public FTP remove this property from the properties file.
 
+## Database
+
+The project uses an in-memory database by default and it is deleted every time the application is stopped. In order to use mySQL as database configure its properties in properties file.
 
 ## How to install UniversalFileDownloader
 After cloning the repository, execute **_"gradlew.bat build"_** command from the root directory of the project (**_./gradlew build for Linux users_**).
