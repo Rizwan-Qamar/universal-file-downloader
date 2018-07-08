@@ -5,6 +5,8 @@ import com.agoda.entities.Batch;
 import com.agoda.entities.BatchItem;
 import com.agoda.entities.BatchItemStatus;
 import com.agoda.entities.BatchStatus;
+import com.agoda.exceptions.FileHandlerException;
+
 import com.agoda.model.ResourceModel;
 import com.agoda.protocols.AbstractFileHandler;
 import com.agoda.repositories.BatchRepository;
@@ -44,9 +46,6 @@ public class BatchTask implements com.agoda.core.interfaces.BatchTask {
   private String genericPassword;
 
   private ThreadPoolTaskExecutor asyncExecutor;
-
-  // TODO Wait for all tasks to finish
-  // TODO Update database
 
   @PostConstruct
   public void init() {
@@ -109,8 +108,12 @@ public class BatchTask implements com.agoda.core.interfaces.BatchTask {
                 FilenameUtils.concat(downloadDir, FilenameUtils.getName(url.getPath())));
       } catch (InterruptedException e) {
         printException(e);
-        batchItemMap.get(resourceModel.getIdentifier()).setStatus(BatchItemStatus.UNAVAILABLE);
+        //        batchItemMap.get(resourceModel.getIdentifier()).setStatus(BatchItemStatus.UNAVAILABLE);
       } catch (ExecutionException e) {
+        if (e.getCause() instanceof FileHandlerException) {
+          FileHandlerException cause = (FileHandlerException) e.getCause();
+          resourceModel = cause.getResourceModel();
+        }
         printException(e);
         batchItemMap.get(resourceModel.getIdentifier()).setStatus(BatchItemStatus.UNAVAILABLE);
       }

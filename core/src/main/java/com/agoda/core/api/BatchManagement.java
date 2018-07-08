@@ -5,6 +5,7 @@ import com.agoda.entities.Batch;
 import com.agoda.entities.BatchItem;
 import com.agoda.entities.BatchItemStatus;
 import com.agoda.entities.BatchStatus;
+import com.agoda.repositories.BatchItemRepository;
 import com.agoda.repositories.BatchRepository;
 import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
@@ -26,6 +27,7 @@ public class BatchManagement implements com.agoda.core.interfaces.BatchManagemen
 
   @Autowired private BatchTask batchTask;
   @Autowired private BatchRepository batchRepository;
+  @Autowired private BatchItemRepository batchItemRepository;
 
   public static String[] schemes = {"http", "https", "ftp"};
 
@@ -87,5 +89,27 @@ public class BatchManagement implements com.agoda.core.interfaces.BatchManagemen
       return false;
     }
     return true;
+  }
+
+  @Override
+  public boolean isApproved(String id) {
+    BatchItem batchItem = batchItemRepository.findOne(id);
+    if (batchItem != null) {
+      batchItem.setStatus(BatchItemStatus.APPROVED);
+      batchItemRepository.save(batchItem);
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public boolean isRejected(String id) {
+    BatchItem batchItem = batchItemRepository.findOne(id);
+    if (batchItem != null) {
+      batchItem.setStatus(BatchItemStatus.REJECTED);
+      batchItemRepository.save(batchItem);
+      return true;
+    }
+    return false;
   }
 }

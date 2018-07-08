@@ -2,21 +2,20 @@ package com.agoda;
 
 import com.agoda.core.interfaces.BatchManagement;
 import com.agoda.entities.Batch;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.*;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -26,6 +25,8 @@ public class TestController {
   private Logger log = LoggerFactory.getLogger(this.getClass());
 
   @Autowired private BatchManagement batchManagement;
+
+  @Autowired ServletContext context;
 
   @RequestMapping("/")
   public ModelAndView welcome() {
@@ -108,5 +109,80 @@ public class TestController {
     // data.add("ftp://speedtest.tele2.net/1GB.zip");
 
     return data;
+  }
+
+  @RequestMapping("/approveItem.do")
+  public @ResponseBody Map<String, Object> approveItem(@RequestParam Map<String, Object> params)
+      throws Exception {
+
+    log.info("Received: " + "a request");
+    String itemId = (String) params.get("itemId");
+    boolean result = batchManagement.isApproved(itemId);
+
+    Map<String, Object> results = new HashMap<String, Object>();
+    if (result) {
+      results.put("STATUS", "SUCCESS");
+      return results;
+    } else {
+      results.put("STATUS", "FAILURE");
+      return results;
+    }
+  }
+
+  @RequestMapping("/rejectItem.do")
+  public @ResponseBody Map<String, Object> rejectItem(@RequestParam Map<String, Object> params)
+      throws Exception {
+
+    log.info("Received: " + "a request");
+    String itemId = (String) params.get("itemId");
+    boolean result = batchManagement.isRejected(itemId);
+
+    Map<String, Object> results = new HashMap<String, Object>();
+    if (result) {
+      results.put("STATUS", "SUCCESS");
+      return results;
+    } else {
+      results.put("STATUS", "FAILURE");
+      return results;
+    }
+  }
+
+  @RequestMapping("/download/{fileName:.+}")
+  public void downloader(
+      HttpServletRequest request,
+      HttpServletResponse response,
+      @PathVariable("fileName") String fileName) {
+    try {
+      String downloadFolder = context.getRealPath("/downloads");
+      File file = new File(downloadFolder + File.separator + fileName);
+
+      if (file.exists()) {
+        String mimeType = context.getMimeType(file.getPath());
+
+        if (mimeType == null) {
+          mimeType = "application/octet-stream";
+        }
+
+        response.setContentType(mimeType);
+        response.addHeader("Content-Disposition", "attachment; filename=" + fileName);
+        response.setContentLength((int) file.length());
+
+        OutputStream os = response.getOutputStream();
+        FileInputStream fis = new FileInputStream(file);
+        byte[] buffer = new byte[4096];
+        int b = -1;
+
+        while ((b = fis.read(buffer)) != -1) {
+          os.write(buffer, 0, b);
+        }
+
+        fis.close();
+        os.close();
+      } else {
+        System.out.println("Requested " + fileName + " file not found!!");
+      }
+    } catch (IOException e) {
+      System.out.println("Error:- " + e.getMessage());
+    }
   }
 }

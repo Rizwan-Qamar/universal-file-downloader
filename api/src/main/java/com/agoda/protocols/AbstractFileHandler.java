@@ -1,5 +1,6 @@
 package com.agoda.protocols;
 
+import com.agoda.exceptions.FileHandlerException;
 import com.agoda.interfaces.FileHandler;
 import com.agoda.model.ResourceModel;
 import java.io.File;
@@ -40,7 +41,7 @@ public abstract class AbstractFileHandler implements FileHandler {
   }
 
   /** Returns the resource model */
-  public abstract ResourceModel call() throws IOException;
+  public abstract ResourceModel call() throws FileHandlerException, IOException;
 
   public ResourceModel getResourceModel() {
     return resourceModel;
@@ -60,5 +61,15 @@ public abstract class AbstractFileHandler implements FileHandler {
 
   public void setDownloadDir(String path) {
     this.downloadDir = path;
+  }
+
+  public void genericExceptionHandler(Exception e) throws FileHandlerException {
+    throw new FileHandlerException(
+        "There was an exception for: "
+            + getResourceModel().getUrl()
+            + ". Caused by: "
+            + e.getMessage(),
+        e,
+        getResourceModel());
   }
 }

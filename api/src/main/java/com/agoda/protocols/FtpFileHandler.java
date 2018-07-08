@@ -1,5 +1,6 @@
 package com.agoda.protocols;
 
+import com.agoda.exceptions.FileHandlerException;
 import com.agoda.model.ResourceModel;
 import java.io.*;
 import java.net.URL;
@@ -13,7 +14,7 @@ public class FtpFileHandler extends AbstractFileHandler {
   private Logger log = LoggerFactory.getLogger(this.getClass());
 
   @Override
-  public ResourceModel call() throws IOException {
+  public ResourceModel call() throws IOException, FileHandlerException {
 
     URL dataUrl = new URL(getResourceModel().getUrl());
     String filePath =
@@ -44,6 +45,7 @@ public class FtpFileHandler extends AbstractFileHandler {
       } catch (Exception ex) {
         log.error(String.format("There was an exception for: %s", ex.getMessage()));
         deleteFile(file);
+        genericExceptionHandler(ex);
       }
     } finally {
       try {
@@ -53,6 +55,7 @@ public class FtpFileHandler extends AbstractFileHandler {
         }
       } catch (IOException ex) {
         log.error(String.format("There was an exception for: %s", ex.getMessage()));
+        genericExceptionHandler(ex);
       }
     }
     return getResourceModel();

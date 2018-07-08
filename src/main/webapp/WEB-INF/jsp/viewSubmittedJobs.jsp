@@ -37,22 +37,64 @@ tr.job:hover {
 	function showJobItems(row) {
 		$('.jobItems').hide();
 		$(row).next('tr').toggle();
+	}
+
+	function approve(itemId) {
+
+		$.ajax({
+			type : "GET",
+			url : "${pageContext.request.contextPath}/approveItem.do?itemId="
+					+ itemId,
+			dataType : "json",
+			processData : false,
+			contentType : false,
+			success : function(response) {
+				if (response.STATUS === "SUCCESS") {
+					alert("Successfully approved");
+					location.reload();
+				} else {
+					alert("Couldn't approve because of some internal problem");
+				}
+			},
+			error : function(jqXHR, textStatus, errorThrown) {
+				console.log(jqXHR);
+				alert("Couldn't approve because of some internal problem");
+			}
+		});
+
+	}
+
+	function reject(itemId) {
+
+		$.ajax({
+			type : "GET",
+			url : "${pageContext.request.contextPath}/rejectItem.do?itemId="
+					+ itemId,
+			dataType : "json",
+			processData : false,
+			contentType : false,
+			success : function(response) {
+				if (response.STATUS === "SUCCESS") {
+					alert("Successfully rejected");
+					location.reload();
+				} else {
+					alert("Couldn't reject because of some internal problem");
+				}
+			},
+			error : function(jqXHR, textStatus, errorThrown) {
+				console.log(jqXHR);
+				alert("Couldn't reject because of some internal problem");
+			}
+		});
 
 	}
 </script>
-
-
-
 
 <body>
 
 	<div>
 		<h1>Submitted Jobs:</h1>
 		(Click to view items)
-
-
-
-
 		<table>
 			<tr>
 				<th>Batch ID</th>
@@ -84,6 +126,10 @@ tr.job:hover {
 											<th>Item ID</th>
 											<th>Status</th>
 											<th>URL</th>
+											<th>Download</th>
+											<th>Approve</th>
+											<th>Reject</th>
+
 										</tr>
 
 
@@ -92,13 +138,48 @@ tr.job:hover {
 												<c:forEach items="${batch.batchItems}" var="item">
 
 													<tr>
-
 														<td>${item.id}</td>
 														<td>${item.status}</td>
 														<td>${item.resourceLocation}</td>
+														<td>
 
+															<c:choose>
+
+																<c:when test="${item.status eq 'UNAVAILABLE'}">
+
+																</c:when>
+																<c:otherwise>
+																	<a href="${pageContext.request.contextPath}/downloadItem?itemId=${item.id}"
+																			download>Download</a>
+
+																</c:otherwise>
+															</c:choose></td>
+
+														</td>
+														<td><c:choose>
+																<c:when test="${item.status eq 'APPROVED'}">
+																Already Approved
+															</c:when>
+															<c:when test="${item.status eq 'UNAVAILABLE'}">
+
+															</c:when>
+																<c:otherwise>
+																	<a href="#" onclick="approve('${item.id}')">Approve</a>
+
+																</c:otherwise>
+															</c:choose></td>
+														<td><c:choose>
+																<c:when test="${item.status eq 'REJECTED'}">
+																Already Rejected
+															</c:when>
+															<c:when test="${item.status eq 'UNAVAILABLE'}">
+
+															</c:when>
+																<c:otherwise>
+																	<a href="#" onclick="reject('${item.id}')">Reject</a>
+																</c:otherwise>
+															</c:choose></td>
 													</tr>
-
 												</c:forEach>
 
 

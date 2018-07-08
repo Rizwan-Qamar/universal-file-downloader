@@ -16,4 +16,8 @@ public interface BatchManagement {
   void addBatch(Batch batch);
 
   Iterable<Batch> query();
+
+  boolean isApproved(String id);
+
+  boolean isRejected(String id);
 }
