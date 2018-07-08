@@ -4,6 +4,8 @@ public class ResourceModel {
 
   private String identifier;
   private String url;
+
+  private String resourceName;
   private String username;
   private String password;
 
@@ -12,9 +14,11 @@ public class ResourceModel {
     this.url = url;
   }
 
-  public ResourceModel(String identifier, String url, String username, String password) {
+  public ResourceModel(
+      String identifier, String url, String resourceName, String username, String password) {
     this.identifier = identifier;
     this.url = url;
+    this.resourceName = resourceName;
     this.username = username;
     this.password = password;
   }
@@ -49,5 +53,13 @@ public class ResourceModel {
 
   public void setPassword(String password) {
     this.password = password;
+  }
+
+  public String getResourceName() {
+    return resourceName;
+  }
+
+  public void setResourceName(String resourceName) {
+    this.resourceName = resourceName;
   }
 }

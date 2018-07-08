@@ -5,7 +5,6 @@ import com.agoda.entities.Batch;
 import com.agoda.entities.BatchItem;
 import com.agoda.entities.BatchItemStatus;
 import com.agoda.entities.BatchStatus;
-
 import com.agoda.repositories.BatchRepository;
 import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;

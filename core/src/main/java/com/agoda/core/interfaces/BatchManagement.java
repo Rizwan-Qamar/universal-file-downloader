@@ -1,7 +1,6 @@
 package com.agoda.core.interfaces;
 
 import com.agoda.entities.Batch;
-
 import java.net.MalformedURLException;
 import java.util.List;
 
@@ -17,5 +16,4 @@ public interface BatchManagement {
   void addBatch(Batch batch);
 
   Iterable<Batch> query();
-
 }

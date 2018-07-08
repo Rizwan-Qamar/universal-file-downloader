@@ -73,6 +73,7 @@ public class BatchTaskTest {
         new ResourceModel(
             "cl5f706c-70f7-49d5-a3a7-8248b060cu8t",
             "http://archive.org/download/80MegapixelsCameraSampleImage/CF000891.jpg",
+            "sdsASdasCF000891.jpg",
             "",
             "");
     Future<ResourceModel> resourceModelFuture = mock(AsyncResult.class);

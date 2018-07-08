@@ -9,6 +9,7 @@ import java.util.*;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -162,7 +163,9 @@ public class TestController {
         }
 
         response.setContentType(mimeType);
-        response.addHeader("Content-Disposition", "attachment; filename=" + file.getPath());
+        response.addHeader(
+            "Content-Disposition",
+            "attachment; filename=" + FilenameUtils.getName(batchItem.getResourceLocation()));
         response.setContentLength((int) file.length());
 
         try (OutputStream os = new BufferedOutputStream(response.getOutputStream());

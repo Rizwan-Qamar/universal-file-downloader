@@ -11,6 +11,7 @@ import com.agoda.protocols.AbstractFileHandler;
 import com.agoda.repositories.BatchRepository;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -103,8 +104,7 @@ public class BatchTask implements com.agoda.core.interfaces.BatchTask {
         URL url = new URL(resourceModel.getUrl());
         batchItemMap
             .get(resourceModel.getIdentifier())
-            .setLocationOnDisk(
-                FilenameUtils.concat(downloadDir, FilenameUtils.getName(url.getPath())));
+            .setLocationOnDisk(FilenameUtils.concat(downloadDir, resourceModel.getResourceName()));
       } catch (InterruptedException e) {
         printException(e);
       } catch (ExecutionException e) {
@@ -144,16 +144,27 @@ public class BatchTask implements com.agoda.core.interfaces.BatchTask {
       AbstractFileHandler abstractFileHandler =
           DownloadManager.getInstance(batchItem.getResourceLocation());
       abstractFileHandler.init(downloadDir);
+      String fileName =
+          getRandomizedFileName(FilenameUtils.getName(batchItem.getResourceLocation()));
       abstractFileHandler.setResourceModel(
           new ResourceModel(
               batchItem.getId(),
               batchItem.getResourceLocation(),
+              fileName,
               genericUsername,
               genericPassword));
 
       tasks.add(abstractFileHandler);
     }
     return tasks;
+  }
+
+  public String getRandomizedFileName(String fileName) {
+    SimpleDateFormat simpleDateFormat = new java.text.SimpleDateFormat("yyyyMMdd_HHmmss-SSS");
+    String dateTime = simpleDateFormat.format(new Date());
+    Random random = new Random();
+    String randomNumber = String.valueOf(random.nextInt(9999));
+    return String.format("%s%s%s", dateTime, randomNumber, fileName);
   }
 
   private List<Future<ResourceModel>> submitTasks(List<AbstractFileHandler> tasks) {

@@ -17,8 +17,7 @@ public class FtpFileHandler extends AbstractFileHandler {
   public ResourceModel call() throws IOException, FileHandlerException {
 
     URL dataUrl = new URL(getResourceModel().getUrl());
-    String filePath =
-        FilenameUtils.concat(getDownloadDir(), FilenameUtils.getName(dataUrl.getPath()));
+    String filePath = FilenameUtils.concat(getDownloadDir(), getResourceModel().getResourceName());
     File file = new File(filePath);
 
     FTPClient ftpClient = new FTPClient();
@@ -35,12 +34,17 @@ public class FtpFileHandler extends AbstractFileHandler {
       try (InputStream inputStream =
               ftpClient.retrieveFileStream(String.format("%s", dataUrl.getFile()));
           OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file, false))) {
-        log.debug("FTP PROTOCOL: File " + dataUrl.getPath() + " has started downloading.");
+        log.debug(
+            "FTP PROTOCOL: File "
+                + FilenameUtils.getName(getResourceModel().getUrl())
+                + " has started downloading.");
         saveFile(inputStream, outputStream);
         boolean success = ftpClient.completePendingCommand();
         if (success) {
           log.debug(
-              "FTP PROTOCOL: File " + dataUrl.getPath() + " has been downloaded successfully.");
+              "FTP PROTOCOL: File "
+                  + FilenameUtils.getName(getResourceModel().getUrl())
+                  + " has been downloaded successfully.");
         }
       } catch (Exception ex) {
         log.error("There was an exception at: ", ex);
