@@ -16,4 +16,6 @@ public interface BatchManagement {
   void addBatch(Batch batch);
 
   Iterable<Batch> query();
+
+  boolean validateUrl(List<String> resourcePaths);
 }

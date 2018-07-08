@@ -78,7 +78,7 @@ public class BatchManagement implements com.agoda.core.interfaces.BatchManagemen
     return batch;
   }
 
-  protected boolean validateUrl(List<String> resourcePaths) {
+  public boolean validateUrl(List<String> resourcePaths) {
     UrlValidator urlValidator = new UrlValidator(schemes);
     for (String resource : resourcePaths) {
       if (urlValidator.isValid(resource)) {
