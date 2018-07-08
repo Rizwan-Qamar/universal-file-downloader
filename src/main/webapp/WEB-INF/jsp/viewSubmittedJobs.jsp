@@ -149,7 +149,7 @@ tr.job:hover {
 
 																</c:when>
 																<c:otherwise>
-																	<a href="${pageContext.request.contextPath}/downloadItem?itemId=${item.id}"
+																	<a href="${pageContext.request.contextPath}/downloadItem/${item.id}"
 																			download>Download</a>
 
 																</c:otherwise>

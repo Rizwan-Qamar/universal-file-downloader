@@ -1,11 +1,10 @@
 package com.agoda;
 
+import com.agoda.core.interfaces.BatchItemManagement;
 import com.agoda.core.interfaces.BatchManagement;
 import com.agoda.entities.Batch;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import com.agoda.entities.BatchItem;
+import java.io.*;
 import java.util.*;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +24,7 @@ public class TestController {
   private Logger log = LoggerFactory.getLogger(this.getClass());
 
   @Autowired private BatchManagement batchManagement;
+  @Autowired private BatchItemManagement batchItemManagement;
 
   @Autowired ServletContext context;
 
@@ -117,16 +117,10 @@ public class TestController {
 
     log.info("Received: " + "a request");
     String itemId = (String) params.get("itemId");
-    boolean result = batchManagement.isApproved(itemId);
+    boolean result = batchItemManagement.markApproved(itemId);
 
     Map<String, Object> results = new HashMap<String, Object>();
-    if (result) {
-      results.put("STATUS", "SUCCESS");
-      return results;
-    } else {
-      results.put("STATUS", "FAILURE");
-      return results;
-    }
+    return getStringObjectMap(result, results);
   }
 
   @RequestMapping("/rejectItem.do")
@@ -135,9 +129,13 @@ public class TestController {
 
     log.info("Received: " + "a request");
     String itemId = (String) params.get("itemId");
-    boolean result = batchManagement.isRejected(itemId);
+    boolean result = batchItemManagement.markRejected(itemId);
 
     Map<String, Object> results = new HashMap<String, Object>();
+    return getStringObjectMap(result, results);
+  }
+
+  private Map<String, Object> getStringObjectMap(boolean result, Map<String, Object> results) {
     if (result) {
       results.put("STATUS", "SUCCESS");
       return results;
@@ -147,15 +145,15 @@ public class TestController {
     }
   }
 
-  @RequestMapping("/download/{fileName:.+}")
+  @RequestMapping("/downloadItem/{itemId}")
   public void downloader(
       HttpServletRequest request,
       HttpServletResponse response,
-      @PathVariable("fileName") String fileName) {
+      @PathVariable("itemId") String itemId) {
     try {
-      String downloadFolder = context.getRealPath("/downloads");
-      File file = new File(downloadFolder + File.separator + fileName);
-
+      BatchItem batchItem = batchItemManagement.query(itemId);
+      String location = batchItem.getLocationOnDisk();
+      File file = new File(location);
       if (file.exists()) {
         String mimeType = context.getMimeType(file.getPath());
 
@@ -164,25 +162,25 @@ public class TestController {
         }
 
         response.setContentType(mimeType);
-        response.addHeader("Content-Disposition", "attachment; filename=" + fileName);
+        response.addHeader("Content-Disposition", "attachment; filename=" + file.getPath());
         response.setContentLength((int) file.length());
 
-        OutputStream os = response.getOutputStream();
-        FileInputStream fis = new FileInputStream(file);
-        byte[] buffer = new byte[4096];
-        int b = -1;
+        try (OutputStream os = new BufferedOutputStream(response.getOutputStream());
+            InputStream fis = new BufferedInputStream(new FileInputStream(file))) {
 
-        while ((b = fis.read(buffer)) != -1) {
-          os.write(buffer, 0, b);
+          byte[] buffer = new byte[4096];
+          int b = 0;
+
+          while ((b = fis.read(buffer)) >= 0) {
+            os.write(buffer, 0, b);
+          }
         }
 
-        fis.close();
-        os.close();
       } else {
-        System.out.println("Requested " + fileName + " file not found!!");
+        log.error("Requested file not found. ID: " + itemId);
       }
     } catch (IOException e) {
-      System.out.println("Error:- " + e.getMessage());
+      log.error("Error:- " + e.getMessage());
     }
   }
 }
