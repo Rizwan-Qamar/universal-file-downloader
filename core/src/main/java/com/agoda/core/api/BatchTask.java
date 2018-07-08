@@ -6,7 +6,6 @@ import com.agoda.entities.BatchItem;
 import com.agoda.entities.BatchItemStatus;
 import com.agoda.entities.BatchStatus;
 import com.agoda.exceptions.FileHandlerException;
-
 import com.agoda.model.ResourceModel;
 import com.agoda.protocols.AbstractFileHandler;
 import com.agoda.repositories.BatchRepository;
@@ -81,8 +80,8 @@ public class BatchTask implements com.agoda.core.interfaces.BatchTask {
       tasks = getTask(batch.getBatchItems());
       futures = submitTasks(tasks);
     } catch (MalformedURLException ex) {
-      ex.printStackTrace();
-      log.error(String.format("There was an exception for: %s", ex.getMessage()));
+      log.error("Exception occurred for: ", ex);
+      log.debug(String.format("There was an exception for: %s", ex.getMessage()));
       throw ex;
     }
 
@@ -108,18 +107,15 @@ public class BatchTask implements com.agoda.core.interfaces.BatchTask {
                 FilenameUtils.concat(downloadDir, FilenameUtils.getName(url.getPath())));
       } catch (InterruptedException e) {
         printException(e);
-        //        batchItemMap.get(resourceModel.getIdentifier()).setStatus(BatchItemStatus.UNAVAILABLE);
       } catch (ExecutionException e) {
+        printException(e);
         if (e.getCause() instanceof FileHandlerException) {
           FileHandlerException cause = (FileHandlerException) e.getCause();
           resourceModel = cause.getResourceModel();
+          batchItemMap.get(resourceModel.getIdentifier()).setStatus(BatchItemStatus.UNAVAILABLE);
         }
-        printException(e);
-        batchItemMap.get(resourceModel.getIdentifier()).setStatus(BatchItemStatus.UNAVAILABLE);
       }
     }
-
-    //    cleanUp();
 
     log.debug("Updating status of batch: " + batch.getId());
     batchNew.setStatus(BatchStatus.COMPLETED);
@@ -129,8 +125,7 @@ public class BatchTask implements com.agoda.core.interfaces.BatchTask {
   }
 
   private void printException(Exception e) {
-    e.printStackTrace();
-    log.error(e.getMessage());
+    log.error("Exception occurred at: ", e);
   }
 
   private Map<String, BatchItem> getBatchItemsHashSet(Batch batch) {

@@ -43,7 +43,8 @@ public class FtpFileHandler extends AbstractFileHandler {
               "FTP PROTOCOL: File " + dataUrl.getPath() + " has been downloaded successfully.");
         }
       } catch (Exception ex) {
-        log.error(String.format("There was an exception for: %s", ex.getMessage()));
+        log.error("There was an exception at: ", ex);
+        log.debug(String.format("There was an exception for: %s", ex.getMessage()));
         deleteFile(file);
         genericExceptionHandler(ex);
       }
@@ -54,7 +55,8 @@ public class FtpFileHandler extends AbstractFileHandler {
           ftpClient.disconnect();
         }
       } catch (IOException ex) {
-        log.error(String.format("There was an exception for: %s", ex.getMessage()));
+        log.error("There was an exception at: ", ex);
+        log.debug(String.format("There was an exception for: %s", ex.getMessage()));
         genericExceptionHandler(ex);
       }
     }

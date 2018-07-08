@@ -47,7 +47,8 @@ public class BatchManagement implements com.agoda.core.interfaces.BatchManagemen
     try {
       batchTask.processTask(batch);
     } catch (MalformedURLException e) {
-      e.printStackTrace();
+      log.error("Malformed URL was found: ", e);
+      log.info("Exception occurred because of: " + e.getMessage());
     }
 
     log.debug("Batch request was submitted");
