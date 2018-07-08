@@ -3,16 +3,19 @@ package com.agoda.core.api;
 import com.agoda.DownloadManager;
 import com.agoda.entities.Batch;
 import com.agoda.entities.BatchItem;
+import com.agoda.entities.BatchItemStatus;
+import com.agoda.entities.BatchStatus;
 import com.agoda.model.ResourceModel;
 import com.agoda.protocols.AbstractFileHandler;
 import com.agoda.repositories.BatchRepository;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.net.URL;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,29 +87,54 @@ public class BatchTask implements com.agoda.core.interfaces.BatchTask {
       throw ex;
     }
 
+    Batch batchNew = batchRepository.findOne(batch.getId());
+    Map<String, BatchItem> batchItemMap = getBatchItemsHashSet(batch);
+
     log.debug("Waiting for tasks");
     for (Future<ResourceModel> future : futures) {
-
+      ResourceModel resourceModel = null;
       try {
-        ResourceModel resourceModel = future.get();
+        resourceModel = future.get();
         log.debug(
             "Identifier: "
                 + resourceModel.getIdentifier()
                 + " File "
                 + resourceModel.getUrl()
                 + " has been downloaded successfully.");
+        batchItemMap.get(resourceModel.getIdentifier()).setStatus(BatchItemStatus.UNMARKED);
+        URL url = new URL(resourceModel.getUrl());
+        batchItemMap
+            .get(resourceModel.getIdentifier())
+            .setLocationOnDisk(
+                FilenameUtils.concat(downloadDir, FilenameUtils.getName(url.getPath())));
       } catch (InterruptedException e) {
-        e.printStackTrace();
+        printException(e);
+        batchItemMap.get(resourceModel.getIdentifier()).setStatus(BatchItemStatus.UNAVAILABLE);
       } catch (ExecutionException e) {
-
+        printException(e);
+        batchItemMap.get(resourceModel.getIdentifier()).setStatus(BatchItemStatus.UNAVAILABLE);
       }
     }
 
     cleanUp();
 
     log.debug("Updating status of batch: " + batch.getId());
+    batchNew.setStatus(BatchStatus.COMPLETED);
 
-    //TODO After all the batch has finished Update status of Batch to completed and update status of all Item to completed or Exception
+    batchRepository.save(batchNew);
+  }
+
+  private void printException(Exception e) {
+    e.printStackTrace();
+    log.error(e.getMessage());
+  }
+
+  private Map<String, BatchItem> getBatchItemsHashSet(Batch batch) {
+    Map<String, BatchItem> batchItemSet = new HashMap<>();
+    for (BatchItem batchItem : batch.getBatchItems()) {
+      batchItemSet.put(batchItem.getId(), batchItem);
+    }
+    return batchItemSet;
   }
 
   private List<AbstractFileHandler> getTask(List<BatchItem> resourcePaths)

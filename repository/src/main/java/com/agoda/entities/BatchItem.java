@@ -15,6 +15,8 @@ public class BatchItem implements Serializable {
 
   private BatchItemStatus status;
 
+  private String locationOnDisk;
+
   public BatchItem() {};
 
   @PrePersist
@@ -46,6 +48,14 @@ public class BatchItem implements Serializable {
     this.status = status;
   }
 
+  public String getLocationOnDisk() {
+    return locationOnDisk;
+  }
+
+  public void setLocationOnDisk(String locationOnDisk) {
+    this.locationOnDisk = locationOnDisk;
+  }
+
   @Override
   public String toString() {
     return "BatchItem{"
@@ -57,6 +67,9 @@ public class BatchItem implements Serializable {
         + '\''
         + ", status="
         + status
+        + ", locationOnDisk='"
+        + locationOnDisk
+        + '\''
         + '}';
   }
 }

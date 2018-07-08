@@ -13,8 +13,13 @@ public abstract class AbstractFileHandler implements FileHandler {
   private Logger log = LoggerFactory.getLogger(this.getClass());
 
   private ResourceModel resourceModel;
+  private String downloadDir;
 
-  public abstract void init(Object object);
+  public void init(Object object) {
+    if (object instanceof String) {
+      downloadDir = (String) object;
+    }
+  }
 
   @Override
   public void saveFile(InputStream inputStream, OutputStream outputStream) throws IOException {
@@ -34,7 +39,7 @@ public abstract class AbstractFileHandler implements FileHandler {
     file.delete();
   }
 
-  /** Returns the path of saved file */
+  /** Returns the resource model */
   public abstract ResourceModel call() throws IOException;
 
   public ResourceModel getResourceModel() {
@@ -43,5 +48,17 @@ public abstract class AbstractFileHandler implements FileHandler {
 
   public void setResourceModel(ResourceModel resourceModel) {
     this.resourceModel = resourceModel;
+  }
+
+  public String getDownloadDir() {
+    File dir = new File(downloadDir);
+    if (!dir.exists()) {
+      dir.mkdirs();
+    }
+    return downloadDir;
+  }
+
+  public void setDownloadDir(String path) {
+    this.downloadDir = path;
   }
 }

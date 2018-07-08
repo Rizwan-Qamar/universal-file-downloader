@@ -12,20 +12,12 @@ import org.slf4j.LoggerFactory;
 public class FtpFileHandler extends AbstractFileHandler {
   private Logger log = LoggerFactory.getLogger(this.getClass());
 
-  private String downloadDir = "downloads";
-
-  @Override
-  public void init(Object object) {
-    if (object instanceof String) {
-      downloadDir = (String) object;
-    }
-  }
-
   @Override
   public ResourceModel call() throws IOException {
 
     URL dataUrl = new URL(getResourceModel().getUrl());
-    String filePath = FilenameUtils.concat(downloadDir, FilenameUtils.getName(dataUrl.getPath()));
+    String filePath =
+        FilenameUtils.concat(getDownloadDir(), FilenameUtils.getName(dataUrl.getPath()));
     File file = new File(filePath);
 
     FTPClient ftpClient = new FTPClient();
