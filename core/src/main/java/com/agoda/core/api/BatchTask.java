@@ -88,7 +88,7 @@ public class BatchTask implements com.agoda.core.interfaces.BatchTask {
     }
 
     Batch batchNew = batchRepository.findOne(batch.getId());
-    Map<String, BatchItem> batchItemMap = getBatchItemsHashSet(batch);
+    Map<String, BatchItem> batchItemMap = getBatchItemsHashSet(batchNew);
 
     log.debug("Waiting for tasks");
     for (Future<ResourceModel> future : futures) {
@@ -122,6 +122,7 @@ public class BatchTask implements com.agoda.core.interfaces.BatchTask {
     batchNew.setStatus(BatchStatus.COMPLETED);
 
     batchRepository.save(batchNew);
+    log.info("Batch was saved successfully: " + batch.getId());
   }
 
   private void printException(Exception e) {
