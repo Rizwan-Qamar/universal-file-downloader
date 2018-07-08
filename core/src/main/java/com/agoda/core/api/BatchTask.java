@@ -116,7 +116,7 @@ public class BatchTask implements com.agoda.core.interfaces.BatchTask {
       }
     }
 
-    cleanUp();
+    //    cleanUp();
 
     log.debug("Updating status of batch: " + batch.getId());
     batchNew.setStatus(BatchStatus.COMPLETED);

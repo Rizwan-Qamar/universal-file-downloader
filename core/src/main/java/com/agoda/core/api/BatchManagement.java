@@ -56,6 +56,11 @@ public class BatchManagement implements com.agoda.core.interfaces.BatchManagemen
     batchRepository.save(batch);
   }
 
+  @Override
+  public Iterable<Batch> query() {
+    return batchRepository.findAll();
+  }
+
   private Batch getBatch(List<String> urls) {
     SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm:ss z");
     Batch batch = new Batch();

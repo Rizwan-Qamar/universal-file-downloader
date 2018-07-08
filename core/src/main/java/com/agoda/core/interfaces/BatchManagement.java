@@ -14,4 +14,6 @@ public interface BatchManagement {
   void downloadFiles(List<String> files) throws MalformedURLException;
 
   void addBatch(Batch batch);
+
+  Iterable<Batch> query();
 }

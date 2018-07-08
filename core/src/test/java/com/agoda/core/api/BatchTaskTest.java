@@ -58,7 +58,7 @@ public class BatchTaskTest {
     batchTask.processTask(batch);
   }
 
-  @Test
+  @Test(expected = Test.None.class /* no exception expected */)
   public void processTaskCompleteFlow()
       throws MalformedURLException, ExecutionException, InterruptedException {
 
