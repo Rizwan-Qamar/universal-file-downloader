@@ -39,10 +39,10 @@ public class BatchTask implements com.agoda.core.interfaces.BatchTask {
   @Value("${ufd.core.api.downloadLocation:downloads}")
   private String downloadDir;
 
-  @Value("${ufd.core.api.generic.username}")
+  @Value("${ufd.core.api.generic.username:}")
   private String genericUsername;
 
-  @Value("${ufd.core.api.generic.password}")
+  @Value("${ufd.core.api.generic.password:}")
   private String genericPassword;
 
   private ThreadPoolTaskExecutor asyncExecutor;
