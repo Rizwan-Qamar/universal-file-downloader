@@ -34,8 +34,8 @@ It is responsible for interacting with the database. This artifact use Hibernate
 
 The project uses an in-memory database by default and it is deleted every time the application is stopped. In order to use mySQL as database configure its properties in properties file.
 
-## How to install UniversalFileDownloader
-After cloning the repository, execute **_"gradlew.bat build"_** command from the root directory of the project (**_./gradlew build for Linux users_**).
+## How to Open in IDE
+After cloning the repository, import the project as Gradle project into the IDE. It will download the dependencies on import. Next, **_"BootGradleApplication.java"_** Run this file to launch the application.
 
 ## How to use UniversalFileDownloader
 
